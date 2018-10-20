@@ -5,10 +5,14 @@ import Routes from "./Routes";
 import { Nav, Navbar, NavItem } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { Auth } from "aws-amplify";
+import { Consumer } from './context';
+import Spinner from './containers/Spinner';
+
 
 
 
 class App extends Component {
+
 
   constructor(props) {
     super(props);
@@ -20,6 +24,7 @@ class App extends Component {
   }
 
   async componentDidMount() {
+    
     try {
       await Auth.currentSession();
       this.userHasAuthenticated(true);
@@ -48,12 +53,22 @@ class App extends Component {
       userHasAuthenticated: this.userHasAuthenticated
     };
     return (
-      !this.state.isAuthenticating &&
+      <Consumer>
+          {value => {
+              const {event_list} = value;
+              // console.log(event_list);
+              if (event_list === undefined || event_list.length === 0) {
+                return <Spinner />
+              }
+              else {
+                return (
+
+                !this.state.isAuthenticating &&
       <div className="App container">
         <Navbar fluid collapseOnSelect>
           <Navbar.Header>
             <Navbar.Brand>
-              <Link to="/">Scratch</Link>
+              <Link to="/">EventHub</Link>
             </Navbar.Brand>
             <Navbar.Toggle />
           </Navbar.Header>
@@ -76,7 +91,15 @@ class App extends Component {
         <Routes childProps={childProps} />
       </div>
     );
+
+              }
+      
+      
   }
+}
+</Consumer>
+ )
+}
 }
 
 export default withRouter(App);

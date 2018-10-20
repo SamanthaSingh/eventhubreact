@@ -1,8 +1,6 @@
 import React, { Component } from "react";
-import { PageHeader, ListGroup, ListGroupItem } from "react-bootstrap";
 import "./Home.css";
-import { API } from "aws-amplify";
-import { LinkContainer } from "react-router-bootstrap";
+import axios from 'axios';
 
 
 
@@ -12,78 +10,61 @@ export default class Home extends Component {
 
     this.state = {
       isLoading: true,
-      notes: []
+      event_list: []
     };
   }
 
   async componentDidMount() {
     if (!this.props.isAuthenticated) {
-      return;
+      axios.get(`https://us-central1-gfunction-220020.cloudfunctions.net/test/api/displayEvents`)
+        .then(res => {
+            this.setState({event_list:res.data})
+        })
+        .catch(err => console.log(err));
+ 
+    this.setState({ isLoading: false });
     }
-  
-    try {
-      const notes = await this.notes();
-      this.setState({ notes });
-    } catch (e) {
-      alert(e);
-    }
-  
+
+    axios.get(`https://us-central1-gfunction-220020.cloudfunctions.net/test/api/displayEvents`)
+        .then(res => {
+            this.setState({event_list:res.data})
+        })
+        .catch(err => console.log(err));
+ 
     this.setState({ isLoading: false });
   }
   
-  notes() {
-    return API.get("notes", "/notes");
-  }
-
-  renderNotesList(notes) {
-    return [{}].concat(notes).map(
-      (note, i) =>
-        i !== 0
-          ? <LinkContainer
-              key={note.noteId}
-              to={`/notes/${note.noteId}`}
-            >
-              <ListGroupItem header={note.content.trim().split("\n")[0]}>
-                {"Created: " + new Date(note.createdAt).toLocaleString()}
-              </ListGroupItem>
-            </LinkContainer>
-          : <LinkContainer
-              key="new"
-              to="/notes/new"
-            >
-              <ListGroupItem>
-                <h4>
-                  <b>{"\uFF0B"}</b> Create a new note
-                </h4>
-              </ListGroupItem>
-            </LinkContainer>
-    );
-  }
-
-  renderLander() {
+  
+  
+  renderEvents () {
     return (
-      <div className="lander">
-        <h1>Scratch</h1>
-        <p>A simple note taking app</p>
-      </div>
+      <React.Fragment>
+        <h2> Top Events: </h2>
+      {this.state.event_list.map(event =>
+        <li key={event.eventId}>{event.eventDescription}
+        </li>
+      )}
+      </React.Fragment>
     );
+
   }
 
-  renderNotes() {
+  renderPersonalizedEvents() {
     return (
-      <div className="notes">
-        <PageHeader>Your Notes</PageHeader>
-        <ListGroup>
-          {!this.state.isLoading && this.renderNotesList(this.state.notes)}
-        </ListGroup>
-      </div>
+      <React.Fragment>
+        <h2> Suggested Events: </h2>
+      {this.state.event_list.map(event =>
+        <li key={event.eventId}>{event.eventDescription}
+        </li>
+      )}
+      </React.Fragment>
     );
   }
 
   render() {
     return (
-      <div className="Home">
-        {this.props.isAuthenticated ? this.renderNotes() : this.renderLander()}
+      <div className="events">
+        {this.props.isAuthenticated ? this.renderPersonalizedEvents() : this.renderEvents()}
       </div>
     );
   }
