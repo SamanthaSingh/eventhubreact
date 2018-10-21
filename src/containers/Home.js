@@ -1,6 +1,8 @@
 import React, { Component } from "react";
 import "./Home.css";
 import axios from 'axios';
+import Search from './Search';
+import MyCalendar from './MyCalendar';
 
 
 
@@ -50,13 +52,28 @@ export default class Home extends Component {
   }
 
   renderPersonalizedEvents() {
+    let calendar;
+
+    if (this.state.isLoading === false) {
+      calendar = <MyCalendar events={this.state.event_list} />
+    }
+    else {
+      calendar = <MyCalendar events={{asad:'asad'}} />
+    }
     return (
       <React.Fragment>
+        <Search />
         <h2> Suggested Events: </h2>
       {this.state.event_list.map(event =>
         <li key={event.eventId}>{event.eventDescription}
         </li>
       )}
+
+      {calendar}
+
+      
+      
+      
       </React.Fragment>
     );
   }
