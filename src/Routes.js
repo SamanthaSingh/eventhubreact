@@ -5,8 +5,8 @@ import NotFound from "./containers/NotFound";
 import Login from "./containers/Login";
 import AppliedRoute from "./components/AppliedRoute";
 import Signup from "./containers/Signup";
-import NewNote from "./containers/NewNote";
-import Notes from "./containers/Notes";
+// import NewNote from "./containers/NewNote";
+// import Notes from "./containers/Notes";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import UnauthenticatedRoute from "./components/UnauthenticatedRoute";
 import SearchResults from "./containers/SearchResults";
@@ -21,8 +21,8 @@ export default ({ childProps }) =>
     <Route path="/searchResults/" exact component={SearchResults} props={childProps} />
 
 
-    <AuthenticatedRoute path="/notes/new" exact component={NewNote} props={childProps} />
-    <AuthenticatedRoute path="/notes/:id" exact component={Notes} props={childProps} />
+    {/* <AuthenticatedRoute path="/notes/new" exact component={NewNote} props={childProps} /> */}
+    {/* <AuthenticatedRoute path="/notes/:id" exact component={Notes} props={childProps} /> */}
 
 
     { /* Finally, catch all unmatched routes */ }

@@ -15,28 +15,45 @@ class MyCalendar extends Component {
     };
   }
 
-  componentDidUpdate() {
-    console.log(this.props);
+  componentDidMount () {
+    if (this.props.events.length > 0)
+    {   
+    let newListOfEvents = [];
+    for (let i = 0 ; i<this.props.events.length ; i++) {
+      let date = new Date (this.props.events[i].eventStartTime);
+      let newEvent = { 'title':this.props.events[i].eventTitle, 'allDay':false, 'start':new Date(date), 'end': new Date(date),  };
+      newListOfEvents.push(newEvent);
+    }
+    
 
-    let newEvents = [{ 'title':"John", 'allDay':false, 'start': new Date('December 17, 2018 03:24:00'),'end': new Date('December 17, 2018 04:24:00'), }];
+    this.setState({events: newListOfEvents});
+    }
 
-    // this.setState ({events: newEvents});
+  }
 
+  componentWillReceiveProps(props) {
+
+    if (props.events.length > 0)
+    {   
+    let newListOfEvents = [];
+    for (let i = 0 ; i<props.events.length ; i++) {
+      let date = new Date (props.events[i].eventStartTime);
+      let newEvent = { 'title':props.events[i].eventTitle, 'allDay':false, 'start':new Date(date), 'end': new Date(date),  };
+      newListOfEvents.push(newEvent);
+    }
+    
+
+    this.setState({events: newListOfEvents});
+    }
 
   }
 
   
 
   
+
+  
   render() {
-    let events=[
-      {
-        'title': 'My event',
-        'allDay': false,
-        'start': new Date('December 17, 2018 03:24:00'), // 10.00 AM
-        'end': new Date('December 17, 2018 04:24:00'), // 2.00 PM
-      }
-    ]
     return (
       <div className = "calendar">
      <BigCalendar
