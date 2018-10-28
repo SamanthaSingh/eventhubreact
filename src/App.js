@@ -7,6 +7,8 @@ import { LinkContainer } from "react-router-bootstrap";
 import { Auth } from "aws-amplify";
 import { Consumer } from './context';
 import Spinner from './containers/Spinner';
+import {reactLocalStorage} from 'reactjs-localstorage';
+
 
 
 
@@ -40,6 +42,7 @@ class App extends Component {
   
   userHasAuthenticated = authenticated => {
     this.setState({ isAuthenticated: authenticated });
+    reactLocalStorage.set('isAuthenticated', authenticated);
   }
 
   handleLogout = async event => {

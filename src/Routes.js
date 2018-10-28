@@ -10,6 +10,9 @@ import Signup from "./containers/Signup";
 import AuthenticatedRoute from "./components/AuthenticatedRoute";
 import UnauthenticatedRoute from "./components/UnauthenticatedRoute";
 import SearchResults from "./containers/SearchResults";
+import eventDetails from "./containers/EventDetails";
+import Register from "./containers/Register";
+
 
 
 
@@ -19,10 +22,14 @@ export default ({ childProps }) =>
     <UnauthenticatedRoute path="/login" exact component={Login} props={childProps} />
     <UnauthenticatedRoute path="/signup" exact component={Signup} props={childProps} />
     <Route path="/searchResults/" exact component={SearchResults} props={childProps} />
+    <Route path="/eventDetails/:id" exact component={eventDetails} props={childProps} />
+
 
 
     {/* <AuthenticatedRoute path="/notes/new" exact component={NewNote} props={childProps} /> */}
     {/* <AuthenticatedRoute path="/notes/:id" exact component={Notes} props={childProps} /> */}
+    <AuthenticatedRoute path="/register" exact component={Register} props={childProps} />
+
 
 
     { /* Finally, catch all unmatched routes */ }

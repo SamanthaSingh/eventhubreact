@@ -39,13 +39,29 @@ export default class Home extends Component {
   
   
   renderEvents () {
+    let calendar;
+
+    if (this.state.isLoading === false) {
+      calendar = <MyCalendar events={this.state.event_list} />
+    }
+    else {
+      calendar = <MyCalendar events={{asad:'asad'}} />
+    }
     return (
       <React.Fragment>
-        <h2> Top Events: </h2>
+        <Search />
+        <h2> Suggested Events: </h2>
+        
       {this.state.event_list.map(event =>
-        <li key={event.eventId}>{event.eventDescription}
-        </li>
+      <a key={event.eventId} href={`eventDetails/${event.eventId}`}>
+        <div >
+        <p>{event.eventDescription}</p>
+        <img src ={`${event.eventPicture}`} alt="event" />
+        </div>
+        </a>
       )}
+      
+      {calendar}
       </React.Fragment>
     );
 
@@ -64,16 +80,17 @@ export default class Home extends Component {
       <React.Fragment>
         <Search />
         <h2> Suggested Events: </h2>
+        
       {this.state.event_list.map(event =>
-        <li key={event.eventId}>{event.eventDescription}
-        </li>
+      <a key={event.eventId} href={`eventDetails/${event.eventId}`}>
+        <div >
+        <p>{event.eventDescription}</p>
+        <img src ={`${event.eventPicture}`} alt="event" />
+        </div>
+        </a>
       )}
-
+      
       {calendar}
-
-      
-      
-      
       </React.Fragment>
     );
   }
