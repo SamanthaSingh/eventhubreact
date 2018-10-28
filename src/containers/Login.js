@@ -3,6 +3,8 @@ import { FormGroup, FormControl, ControlLabel } from "react-bootstrap";
 import LoaderButton from "../components/LoaderButton";
 import "./Login.css";
 import { Auth } from "aws-amplify";
+import {reactLocalStorage} from 'reactjs-localstorage';
+
 
 
 export default class Login extends Component {
@@ -34,6 +36,8 @@ export default class Login extends Component {
     try {
       await Auth.signIn(this.state.email, this.state.password);
       this.props.userHasAuthenticated(true);
+      reactLocalStorage.set('email', this.state.email);
+
     } catch (e) {
       alert(e.message);
       this.setState({ isLoading: false });

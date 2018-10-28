@@ -1,5 +1,8 @@
 import React, { Component } from 'react';
 import AddToCalendar from 'react-add-to-calendar';
+import {reactLocalStorage} from 'reactjs-localstorage';
+import axios from 'axios';
+import {Button} from 'react-bootstrap';
 
 
 class Register extends Component {
@@ -8,8 +11,27 @@ class Register extends Component {
 
         this.state = {
             event: this.props.location.state.event,
-            eventToAdd : []
+            eventToAdd : [],
+            alreadyRegistered: 0
+
         }
+
+    }
+
+    confirmRegistration() {
+
+        
+        let data = {
+            eventId : this.state.event[0].eventId,
+            email : reactLocalStorage.get('email')
+          }
+      axios.post(`http://localhost:3000/api/registerEvent`, { data })
+            .then(res => {
+            })
+          .catch((error) => {
+            console.log(error);
+          });
+        
 
     }
 
@@ -24,11 +46,43 @@ class Register extends Component {
           }
           this.setState({eventToAdd:event});
 
+          let data = {
+            eventId : this.state.event[0].eventId,
+            email : reactLocalStorage.get('email')
+          }
+
+          axios.post(`http://localhost:3000/api/checkRegistration`, { data })
+            .then(res => {
+                if (res.data[0].count > 0) {
+                    this.setState({alreadyRegistered: 1});
+                }
+            })
+          .catch((error) => {
+            console.log(error);
+          });
+
+
+
+
+
 
     }
   render() {
+      let button;
+      if (this.state.alreadyRegistered === 1) {
+        button = <Button bsSize="large" disabled>
+    Registered
+  </Button>
+      }
+      else {
+        button = <button className="btn" onClick={this.confirmRegistration.bind(this)} >
+        Confirm
+        </button>  
+      }
+      
     return (
       <div>
+          {button}
  <AddToCalendar event={this.state.eventToAdd} listItems = {[ { apple: 'Apple Calendar' }, { google: 'Google' } ]}  displayItemIcons = {false}  />   
 </div>
     )

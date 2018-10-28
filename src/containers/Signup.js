@@ -8,16 +8,21 @@ import {
 import LoaderButton from "../components/LoaderButton";
 import "./Signup.css";
 import { Auth } from "aws-amplify";
+import axios from 'axios';
+import {reactLocalStorage} from 'reactjs-localstorage';
 
 
 export default class Signup extends Component {
   constructor(props) {
     super(props);
+    this.addToDatabase = this.addToDatabase.bind(this);
+
 
     this.state = {
       isLoading: false,
       email: "",
       password: "",
+      name:"",
       confirmPassword: "",
       confirmationCode: "",
       newUser: null
@@ -30,6 +35,22 @@ export default class Signup extends Component {
       this.state.password.length > 0 &&
       this.state.password === this.state.confirmPassword
     );
+  }
+
+  addToDatabase() {
+
+    let data = {
+      name : this.state.name,
+      email : this.state.email
+    }
+axios.post(`http://localhost:3000/api/addUser`, { data })
+      .then(res => {
+        console.log(res.data);
+      })
+    .catch((error) => {
+      console.log(error);
+    });
+    reactLocalStorage.set('email', data.email);
   }
 
   validateConfirmationForm() {
@@ -72,6 +93,7 @@ export default class Signup extends Component {
       await Auth.signIn(this.state.email, this.state.password);
   
       this.props.userHasAuthenticated(true);
+      this.addToDatabase();
       this.props.history.push("/");
     } catch (e) {
       alert(e.message);
@@ -110,6 +132,15 @@ export default class Signup extends Component {
   renderForm() {
     return (
       <form onSubmit={this.handleSubmit}>
+      <FormGroup controlId="name" bsSize="large">
+          <ControlLabel>Name</ControlLabel>
+          <FormControl
+            autoFocus
+            type="text"
+            value={this.state.name}
+            onChange={this.handleChange}
+          />
+        </FormGroup>
         <FormGroup controlId="email" bsSize="large">
           <ControlLabel>Email</ControlLabel>
           <FormControl
@@ -135,6 +166,7 @@ export default class Signup extends Component {
             type="password"
           />
         </FormGroup>
+        
         <LoaderButton
           block
           bsSize="large"
