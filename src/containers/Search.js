@@ -15,7 +15,7 @@ import { Redirect } from 'react-router'
         e.preventDefault();
         axios.get(`http://localhost:3000/api/searchEvents/${this.state.eventTitle}`)
         .then(res => {
-            this.setState({trackTitle: '', events: res.data, redirect:true});            
+            this.setState({eventTitle: '', events: res.data, redirect:true});            
         })
         .catch(err => console.log(err));
     }

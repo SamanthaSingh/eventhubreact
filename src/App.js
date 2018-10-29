@@ -8,6 +8,8 @@ import { Auth } from "aws-amplify";
 import { Consumer } from './context';
 import Spinner from './containers/Spinner';
 import {reactLocalStorage} from 'reactjs-localstorage';
+import Footer from './containers/Footer.js'
+
 
 
 
@@ -91,7 +93,9 @@ class App extends Component {
             </Nav>
           </Navbar.Collapse>
         </Navbar>
+        
         <Routes childProps={childProps} />
+        <Footer />
       </div>
     );
 

@@ -3,6 +3,8 @@ import "./Home.css";
 import axios from 'axios';
 import Search from './Search';
 import MyCalendar from './MyCalendar';
+import { Link } from "react-router-dom";
+
 
 
 
@@ -62,6 +64,7 @@ export default class Home extends Component {
       )}
       
       {calendar}
+      <Link to={`/createevent`}>Create Event</Link>
       </React.Fragment>
     );
 
@@ -91,6 +94,8 @@ export default class Home extends Component {
       )}
       
       {calendar}
+      <Link to={`/createevent`}>Create Event</Link>
+
       </React.Fragment>
     );
   }

@@ -12,6 +12,9 @@ import UnauthenticatedRoute from "./components/UnauthenticatedRoute";
 import SearchResults from "./containers/SearchResults";
 import eventDetails from "./containers/EventDetails";
 import Register from "./containers/Register";
+import AboutUs from "./containers/AboutUs";
+import Contact from "./containers/Contact";
+import CreateEvent from "./containers/CreateEvent";
 
 
 
@@ -23,12 +26,17 @@ export default ({ childProps }) =>
     <UnauthenticatedRoute path="/signup" exact component={Signup} props={childProps} />
     <Route path="/searchResults/" exact component={SearchResults} props={childProps} />
     <Route path="/eventDetails/:id" exact component={eventDetails} props={childProps} />
+    <Route path="/about" exact component={AboutUs} props={childProps} />
+    <Route path="/contact" exact component={Contact} props={childProps} />
+
 
 
 
     {/* <AuthenticatedRoute path="/notes/new" exact component={NewNote} props={childProps} /> */}
     {/* <AuthenticatedRoute path="/notes/:id" exact component={Notes} props={childProps} /> */}
     <AuthenticatedRoute path="/register" exact component={Register} props={childProps} />
+    <AuthenticatedRoute path="/createevent" exact component={CreateEvent} props={childProps} />
+
 
 
 
