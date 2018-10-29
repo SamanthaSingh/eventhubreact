@@ -84,9 +84,9 @@ class MyCalendar extends Component {
   render() {
     return (
       <div id = "calendar" className = "calendar">
-     <BigCalendar
-       localizer={localizer}
+     <BigCalendar popup
        events={this.state.events}
+       localizer={localizer}
        startAccessor="start"
        endAccessor="end"
        onSelectEvent = {this.selectEvent.bind(this)}
