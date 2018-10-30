@@ -2,100 +2,88 @@ import React, { Component } from "react";
 import "./Home.css";
 import axios from 'axios';
 import Search from './Search';
-import MyCalendar from './MyCalendar';
+// import MyCalendar from './MyCalendar';
 import { Link } from "react-router-dom";
-
-
+import DatePicker from 'react-date-picker';
+import Calendar from 'react-calendar';
 
 
 export default class Home extends Component {
   constructor(props) {
     super(props);
+    this.loadEvents = this.loadEvents.bind(this);
 
     this.state = {
       isLoading: true,
-      event_list: []
+      event_list: [],
+      date: new Date(),
     };
   }
 
-  async componentDidMount() {
-    if (!this.props.isAuthenticated) {
-      axios.get(`https://us-central1-gfunction-220020.cloudfunctions.net/test/api/displayEvents`)
-        .then(res => {
-            this.setState({event_list:res.data})
-        })
-        .catch(err => console.log(err));
- 
-    this.setState({ isLoading: false });
-    }
+  loadEvents() {
+    let month = '' + (this.state.date.getMonth() + 1);
+    let day = '' + this.state.date.getDate();
+    let year = this.state.date.getFullYear();
 
-    axios.get(`https://us-central1-gfunction-220020.cloudfunctions.net/test/api/displayEvents`)
-        .then(res => {
-            this.setState({event_list:res.data})
-        })
-        .catch(err => console.log(err));
- 
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+
+    let formattedDate = ([year, month, day].join('-'));
+
+    axios.get(`http://localhost:3000/api/displayEvents/${formattedDate}`)
+      .then(res => {
+        this.setState({ event_list: res.data })
+      })
+      .catch(err => console.log(err));
+
     this.setState({ isLoading: false });
   }
-  
-  
-  
-  renderEvents () {
-    let calendar;
 
-    if (this.state.isLoading === false) {
-      calendar = <MyCalendar events={this.state.event_list} />
+  async componentDidMount() {
+    if (this.props.isAuthenticated) {
+      this.loadEvents();
     }
-    else {
-      calendar = <MyCalendar events={{asad:'asad'}} />
-    }
+  }
+
+
+  renderLandingPage() {
+
     return (
       <React.Fragment>
-        <Search />
-        <h2> Suggested Events: </h2>
-        
-      {this.state.event_list.map(event =>
-      <a key={event.eventId} href={`eventDetails/${event.eventId}`}>
-        <div >
-        <p>{event.eventDescription}</p>
-        <img src ={`${event.eventPicture}`} alt="event" />
-        </div>
-        </a>
-      )}
-      
-      {calendar}
-      <Link to={`/createevent`}>Create Event</Link>
+        This is the landing page.
       </React.Fragment>
     );
 
   }
 
-  renderPersonalizedEvents() {
-    let calendar;
+  onChange = (date) => {
+    this.setState({ date }, function () {
+      this.loadEvents();
+    });
+  }
 
-    if (this.state.isLoading === false) {
-      calendar = <MyCalendar events={this.state.event_list} />
-    }
-    else {
-      calendar = <MyCalendar events={{asad:'asad'}} />
-    }
+  renderPersonalizedEvents() {
+
     return (
       <React.Fragment>
         <Search />
         <h2> Suggested Events: </h2>
-        
-      {this.state.event_list.map(event =>
-      <a key={event.eventId} href={`eventDetails/${event.eventId}`}>
-        <div >
-        <p>{event.eventDescription}</p>
-        <img src ={`${event.eventPicture}`} alt="event" />
-        </div>
-        </a>
-      )}
-      
-      {calendar}
-      <Link to={`/createevent`}>Create Event</Link>
 
+
+        <Calendar
+          onChange={this.onChange}
+          value={this.state.date}
+        />
+
+        {this.state.event_list.map(event =>
+          <a key={event.eventId} href={`eventDetails/${event.eventId}`}>
+            <div >
+              <p>{event.eventDescription}</p>
+              <img src={`${event.eventPicture}`} alt="event" />
+            </div>
+          </a>
+        )}
+        <Link to={`/createevent`}>Create Event</Link>
       </React.Fragment>
     );
   }
@@ -103,7 +91,7 @@ export default class Home extends Component {
   render() {
     return (
       <div className="events">
-        {this.props.isAuthenticated ? this.renderPersonalizedEvents() : this.renderEvents()}
+        {this.props.isAuthenticated ? this.renderPersonalizedEvents() : this.renderLandingPage()}
       </div>
     );
   }

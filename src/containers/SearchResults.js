@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import MyCalendar from './MyCalendar';
+// import MyCalendar from './MyCalendar';
 
  class SearchResults extends Component {
      
@@ -11,7 +11,7 @@ import MyCalendar from './MyCalendar';
         <li key={event.eventId}>{event.eventDescription}
         </li>
       )}
-      <MyCalendar events={events} />
+      {/* <MyCalendar events={events} /> */}
       </div>
       
 
