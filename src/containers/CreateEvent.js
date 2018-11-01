@@ -1,9 +1,21 @@
 import React, { Component } from 'react';
-import { FormGroup, ControlLabel, FormControl, Button } from 'react-bootstrap';
+import { FormGroup, ControlLabel, FormControl } from 'react-bootstrap';
 import Geosuggest from 'react-geosuggest';
 import './CreateEvent.css';
 import DateTimePicker from 'react-datetime-picker';
+import LoaderButton from "../components/LoaderButton";
+import axios from 'axios';
+import S3FileUpload from 'react-s3';
+import {reactLocalStorage} from 'reactjs-localstorage';
+import moment from 'moment';
 
+
+const config = {
+  bucketName: 'event-hub-pictures',
+  region: 'us-west-2',
+  accessKeyId: 'AKIAITTEZ7A3CPTTYT7Q',
+  secretAccessKey: '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',
+}
 
 
 class CreateEvent extends Component {
@@ -12,6 +24,10 @@ class CreateEvent extends Component {
     super(props);
     this.handleChange = this.handleChange.bind(this);
     this.handleLocation = this.handleLocation.bind(this);
+    this.handleFormSubmission = this.handleFormSubmission.bind(this);
+    this.fileUpload = this.fileUpload.bind(this);
+
+
 
     this.state = {
       eventTitle : '',
@@ -23,7 +39,9 @@ class CreateEvent extends Component {
       eventDescription: '',
       numberOfTickets: 0,
       eventType: '',
-      eventTopic: ''
+      eventTopic: '',
+      eventPicture: '',
+      eventCreatedBy: ''
     };
   }
   static defaultProps = {
@@ -53,12 +71,61 @@ class CreateEvent extends Component {
   }
 
   onChangeStartDate(date) {
+    
     this.setState({ eventStartTime: date }) 
   }
 
   onChangeEndDate(date) {
     this.setState({ eventEndTime: date }) 
   }
+
+  handleFormSubmission(e) {
+    e.preventDefault();
+    this.setState({eventCreatedBy:reactLocalStorage.get('email')}, () => {
+      let dateStringStart = moment(this.state.eventStartTime).format("DD-MM-YY hh:mm:ss");
+      let dateStringEnd = moment(this.state.eventEndTime).format("DD-MM-YY hh:mm:ss");
+
+      let data = {
+        eventTitle : this.state.eventTitle,
+        eventAddress : this.state.eventAddress,
+        eventStartTime: dateStringStart,
+        eventEndTime: dateStringEnd,
+        eventLocation: this.state.eventLocation,
+        eventSummary: this.state.eventSummary,
+        eventDescription: this.state.eventDescription,
+        numberOfTickets: this.state.numberOfTickets,
+        eventType: this.state.eventType,
+        eventTopic: this.state.eventTopic,
+        eventPicture: this.state.eventPicture,
+        eventCreatedBy: this.state.eventCreatedBy
+      }
+      
+        console.log(data);
+       
+      axios.post(`http://localhost:3000/api/createEvent`, { data })
+            .then(res => {
+                console.log(res.data);
+            })
+          .catch((error) => {
+            console.log(error);
+          });
+
+      });
+      
+  }
+
+  fileUpload(e) {
+    e.preventDefault();
+    let file = e.target.files[0];
+    S3FileUpload
+    .uploadFile(file, config)
+    .then(data =>  {
+      console.log(data);
+      this.setState({eventPicture:data.location})
+
+    })
+    .catch(err => console.error(err))
+    }
 
 
 
@@ -68,14 +135,8 @@ class CreateEvent extends Component {
 
   render() {
 
-    console.log(this.state.eventTitle);
-    console.log(this.state.eventLocation);
-    console.log(this.state.eventAddress);
-    console.log(this.state.eventStartTime);
-    console.log(this.state.eventEndTime);
-    console.log(this.state.eventTopic);
-    console.log(this.state.eventType);
-    console.log(this.state.numberOfTickets);
+
+
 
 
 
@@ -88,7 +149,7 @@ class CreateEvent extends Component {
     return (
       <div className="CreateEvent">
         <h3>Create Event</h3>
-        <form>
+        <form onSubmit={this.handleFormSubmission}>
           <FormGroup>
             <ControlLabel>Event Title</ControlLabel>
             <FormControl type="text" placeholder="Event Title" 
@@ -125,6 +186,7 @@ class CreateEvent extends Component {
           <DateTimePicker
           onChange={this.onChangeStartDate.bind(this)}
           value={this.state.eventStartTime}
+          minDate= {new Date()}
         />
         </FormGroup>
 
@@ -133,6 +195,7 @@ class CreateEvent extends Component {
           <DateTimePicker
           onChange={this.onChangeEndDate.bind(this)}
           value={this.state.eventEndTime}
+          minDate= {new Date()}
         />
         </FormGroup>
 
@@ -140,7 +203,7 @@ class CreateEvent extends Component {
           
           <FormGroup controlId="formControlsImage">
             <ControlLabel>Upload Image</ControlLabel>
-            <FormControl type="file" placeholder="Add File" />
+            <FormControl type="file" placeholder="Add File" onChange={this.fileUpload} />
           </FormGroup>
 
 
@@ -202,9 +265,14 @@ class CreateEvent extends Component {
             </FormGroup>
 
 
-          <FormGroup controlId="formControlsCreateEvent">
-            <Button type="submit">Launch Event</Button>
-          </FormGroup>
+          
+          <LoaderButton
+  block
+  bsSize="large"
+  type="submit"
+  text="Launch Event"
+  loadingText="Creating Event"
+/>
         </form>
       </div>
     );
