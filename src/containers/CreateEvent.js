@@ -10,12 +10,6 @@ import {reactLocalStorage} from 'reactjs-localstorage';
 import moment from 'moment';
 
 
-const config = {
-  bucketName: 'event-hub-pictures',
-  region: 'us-west-2',
-  accessKeyId: 'AKIAITTEZ7A3CPTTYT7Q',
-  secretAccessKey: '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',
-}
 
 
 class CreateEvent extends Component {
@@ -104,7 +98,7 @@ class CreateEvent extends Component {
        
       axios.post(`http://localhost:3000/api/createEvent`, { data })
             .then(res => {
-                console.log(res.data);
+                console.log(res.data[0].eventId);
             })
           .catch((error) => {
             console.log(error);
