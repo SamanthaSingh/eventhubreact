@@ -4,6 +4,7 @@ import LoaderButton from "../components/LoaderButton";
 import "./Login.css";
 import { Auth } from "aws-amplify";
 import {reactLocalStorage} from 'reactjs-localstorage';
+import axios from 'axios';
 
 
 
@@ -37,7 +38,16 @@ export default class Login extends Component {
       await Auth.signIn(this.state.email, this.state.password);
       this.props.userHasAuthenticated(true);
       reactLocalStorage.set('email', this.state.email);
-
+      let data = {
+        email:this.state.email,
+      }
+      axios.post(`http://localhost:3000/api/checkLogin`, { data })
+      .then(res => {
+        reactLocalStorage.set('firstLogin', res.data[0].firstLogin);
+      })
+    .catch((error) => {
+      console.log(error);
+    });
     } catch (e) {
       alert(e.message);
       this.setState({ isLoading: false });

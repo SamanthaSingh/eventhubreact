@@ -7,6 +7,10 @@ import { BrowserRouter as Router } from "react-router-dom";
 import Amplify from "aws-amplify";
 import config from "./config";
 import { Provider } from './context';
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 
 
 Amplify.configure({

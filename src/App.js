@@ -45,6 +45,7 @@ class App extends Component {
   userHasAuthenticated = authenticated => {
     this.setState({ isAuthenticated: authenticated });
     reactLocalStorage.set('isAuthenticated', authenticated);
+    
   }
 
   handleLogout = async event => {

@@ -5,6 +5,7 @@ import React, { Component } from 'react'
      
   render() {
       const {events} = this.props.location.state;
+      console.log(events);
     return (
       <div>
         {events.map(event =>

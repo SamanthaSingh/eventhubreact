@@ -7,7 +7,7 @@ import Geosuggest from 'react-geosuggest';
 class Search extends Component {
 
     static defaultProps = {
-        times: ['Today', 'Tomorrow', 'This Week', 'Next Week']
+        times: ['Today', 'Tomorrow', 'This Week', 'Next Week', 'Any Time']
     }
 
     state = {

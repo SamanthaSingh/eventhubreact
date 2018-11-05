@@ -23,10 +23,13 @@ class Register extends Component {
         
         let data = {
             eventId : this.state.event[0].eventId,
+            eventStartTime: this.state.event[0].eventStartTime,
+            eventEndTime: this.state.event[0].eventEndTime,
             email : reactLocalStorage.get('email')
           }
       axios.post(`http://localhost:3000/api/registerEvent`, { data })
             .then(res => {
+              this.setState({alreadyRegistered: 1});
             })
           .catch((error) => {
             console.log(error);

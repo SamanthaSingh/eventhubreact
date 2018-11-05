@@ -8,6 +8,29 @@ import axios from 'axios';
 import S3FileUpload from 'react-s3';
 import {reactLocalStorage} from 'reactjs-localstorage';
 import moment from 'moment';
+import ReactModal from 'react-modal';
+
+
+const config = {
+  bucketName: 'event-hub-pictures',
+  dirName: 'event-photos', /* optional */
+  region: 'us-west-2',
+  accessKeyId: process.env.REACT_APP_S3_ACCESS_KEY,
+  secretAccessKey: process.env.REACT_APP_S3_SECRET_ACCESS_KEY,
+
+}
+
+const customStyles = {
+  content : {
+    top                   : '50%',
+    left                  : '50%',
+    right                 : 'auto',
+    bottom                : 'auto',
+    marginRight           : '-50%',
+    transform             : 'translate(-50%, -50%)'
+  }
+};
+
 
 
 
@@ -15,15 +38,20 @@ import moment from 'moment';
 class CreateEvent extends Component {
 
   constructor (props) {
+    console.log(config);
+    ReactModal.setAppElement('body');
     super(props);
     this.handleChange = this.handleChange.bind(this);
     this.handleLocation = this.handleLocation.bind(this);
     this.handleFormSubmission = this.handleFormSubmission.bind(this);
     this.fileUpload = this.fileUpload.bind(this);
+    this.handleCloseModal = this.handleCloseModal.bind(this);
+
 
 
 
     this.state = {
+      showModal: false,
       eventTitle : '',
       eventLocation: '',
       eventAddress: '',
@@ -32,10 +60,11 @@ class CreateEvent extends Component {
       eventSummary: '',
       eventDescription: '',
       numberOfTickets: 0,
-      eventType: '',
-      eventTopic: '',
+      eventType: 'Training or Workshop',
+      eventTopic: 'Science or Technology',
       eventPicture: '',
-      eventCreatedBy: ''
+      eventCreatedBy: '',
+      createdEventId: ''
     };
   }
   static defaultProps = {
@@ -76,8 +105,22 @@ class CreateEvent extends Component {
   handleFormSubmission(e) {
     e.preventDefault();
     this.setState({eventCreatedBy:reactLocalStorage.get('email')}, () => {
-      let dateStringStart = moment(this.state.eventStartTime).format("DD-MM-YY hh:mm:ss");
-      let dateStringEnd = moment(this.state.eventEndTime).format("DD-MM-YY hh:mm:ss");
+      let dateStringStart = moment(this.state.eventStartTime).format("YYYY-MM-DD hh:mm:ss");
+      let dateStringEnd = moment(this.state.eventEndTime).format("YYYY-MM-DD hh:mm:ss");
+      let tags = [ 'HTML', 'CSS', 'JavaScript', 'React', 'Vue.js', 'React Native', 'Climate', 'Weather', 'Environment', 'Development', 'Design', 'Graphics', 'Medical', 'Drugs', 'Brain', 'Heart', 'Doctor', 'Nurse', 'Scientist', 'Dentist', 'Physics', 'Quantum', 'Computing', 'Microsoft', 'Amazon', 'Google', 'Surgery', 'Medicine', 'Awareness', 'Veterinarian', 'Space', 'Pregnancy', 'Data', 'Health', 'Diet', 'Finance', 'Accountant', 'Accounting', 'Economist', 'Supply Chain', 'Cryptocurrency', 'Auditor', 'GAAP', 'IAS', 'Business Plan', 'Tax', 'Entrepreneur', 'Investor', 'Budget', 'Shareholder', 'Risk Management', 'Analysis', 'Banking', 'Human Resources', 'Lawyer', 'Amendments', 'PWC', 'BDO', 'Credit', 'Loan', 'CIBC', 'BMO', 'International', 'Local', 'Debts', 'Wall Street', 'Markets', 'Shares', 'Film Making', 'Choreography', 'Music', 'Acting', 'Actor', 'Lyrists', 'Poetry', 'Cinema', 'Movies', 'Classics', 'Disaster', 'Action', 'Comedy', 'Thriller', 'Horror', 'Sports', 'Soccer', 'Football', 'Hockey', 'Baseball', 'Basketball', 'Drama', 'Hollywood', 'Bollywood', 'Hip-Hop', 'Rap', 'RnB', 'Soul', 'Rock', 'Indie', 'Singers', 'Band', 'Athletics', 'News', 'Politics', 'Facebook', 'Twitter', 'Instagram', 'YouTube', 'Romance', 'Myths', 'Concert', 'Stunts' ]
+
+      let eventTags = [];
+      this.state.eventDescription.split(" ").forEach(function (item) {
+        for (let i = 0; i < tags.length; i++) {
+          if (item.match(new RegExp(tags[i], "ig"))) {
+            eventTags.push(item);
+          }
+        }        
+    });
+
+
+
+    console.log(eventTags);
 
       let data = {
         eventTitle : this.state.eventTitle,
@@ -91,7 +134,8 @@ class CreateEvent extends Component {
         eventType: this.state.eventType,
         eventTopic: this.state.eventTopic,
         eventPicture: this.state.eventPicture,
-        eventCreatedBy: this.state.eventCreatedBy
+        eventCreatedBy: this.state.eventCreatedBy,
+        eventTags: eventTags
       }
       
         console.log(data);
@@ -99,6 +143,7 @@ class CreateEvent extends Component {
       axios.post(`http://localhost:3000/api/createEvent`, { data })
             .then(res => {
                 console.log(res.data[0].eventId);
+                this.setState({ showModal: true, createdEventId:res.data[0].eventId })
             })
           .catch((error) => {
             console.log(error);
@@ -121,6 +166,11 @@ class CreateEvent extends Component {
     .catch(err => console.error(err))
     }
 
+    handleCloseModal () {
+      this.setState({ showModal: false });
+    }
+  
+  
 
 
 
@@ -142,6 +192,14 @@ class CreateEvent extends Component {
     });
     return (
       <div className="CreateEvent">
+
+      <ReactModal 
+           isOpen={this.state.showModal}
+           style={customStyles}
+        >
+        <a href={`eventDetails/${this.state.createdEventId}`}>View Event</a>
+          <button onClick={this.handleCloseModal}>Close Modal</button>
+        </ReactModal>
         <h3>Create Event</h3>
         <form onSubmit={this.handleFormSubmission}>
           <FormGroup>

@@ -16,6 +16,7 @@ import AboutUs from "./containers/AboutUs";
 import Contact from "./containers/Contact";
 import CreateEvent from "./containers/CreateEvent";
 import MyEvents from "./containers/MyEvents";
+import PersonalityTest from "./containers/PersonalityTest";
 
 
 
@@ -32,13 +33,13 @@ export default ({ childProps }) =>
     <Route path="/contact" exact component={Contact} props={childProps} />
 
 
-
-
     {/* <AuthenticatedRoute path="/notes/new" exact component={NewNote} props={childProps} /> */}
     {/* <AuthenticatedRoute path="/notes/:id" exact component={Notes} props={childProps} /> */}
     <AuthenticatedRoute path="/register" exact component={Register} props={childProps} />
     <AuthenticatedRoute path="/createevent" exact component={CreateEvent} props={childProps} />
     <AuthenticatedRoute path="/myevents" exact component={MyEvents} props={childProps} />
+    <AuthenticatedRoute path="/personalitySurvey" exact component={PersonalityTest} props={childProps} />
+
 
 
 

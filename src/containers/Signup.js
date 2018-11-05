@@ -39,18 +39,28 @@ export default class Signup extends Component {
 
   addToDatabase() {
 
-    let data = {
+    let userData = {
       name : this.state.name,
       email : this.state.email
     }
-axios.post(`http://localhost:3000/api/addUser`, { data })
+axios.post(`http://localhost:3000/api/addUser`, { userData })
       .then(res => {
         console.log(res.data);
       })
     .catch((error) => {
       console.log(error);
     });
-    reactLocalStorage.set('email', data.email);
+    reactLocalStorage.set('email', userData.email);
+    let data = {
+      email:userData.email,
+    }
+    axios.post(`http://localhost:3000/api/checkLogin`, { data })
+      .then(res => {
+        reactLocalStorage.set('firstLogin', res.data[0].firstLogin);
+      })
+    .catch((error) => {
+      console.log(error);
+    });
   }
 
   validateConfirmationForm() {

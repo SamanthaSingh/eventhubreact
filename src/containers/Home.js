@@ -6,6 +6,10 @@ import Search from './Search';
 import { Link } from "react-router-dom";
 import DatePicker from 'react-date-picker';
 import Calendar from 'react-calendar';
+import { Redirect } from 'react-router';
+import {reactLocalStorage} from 'reactjs-localstorage';
+
+
 
 
 export default class Home extends Component {
@@ -21,6 +25,8 @@ export default class Home extends Component {
   }
 
   loadEvents() {
+
+  
     let month = '' + (this.state.date.getMonth() + 1);
     let day = '' + this.state.date.getDate();
     let year = this.state.date.getFullYear();
@@ -63,6 +69,16 @@ export default class Home extends Component {
   }
 
   renderPersonalizedEvents() {
+
+    if ((reactLocalStorage.get('firstLogin')) === 'true') {
+      return (
+      <Redirect to={{
+          pathname: '/personalitySurvey',
+      }} />
+
+      );
+
+    }
 
     return (
       <React.Fragment>
