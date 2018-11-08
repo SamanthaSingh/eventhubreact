@@ -2,7 +2,7 @@ import React, { Component, Fragment } from "react";
 import { Link, withRouter } from "react-router-dom";
 import "./App.css";
 import Routes from "./Routes";
-import { Nav, Navbar, NavItem } from "react-bootstrap";
+import { Nav, Navbar, NavItem, MenuItem, NavDropdown } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { Auth } from "aws-amplify";
 import { Consumer } from './context';
@@ -85,7 +85,17 @@ class App extends Component {
                   <LinkContainer to="/myevents">
                       <NavItem>My Events</NavItem>
                     </LinkContainer>
-                 <NavItem onClick={this.handleLogout}>Logout</NavItem>
+                 
+                 <NavDropdown eventKey="4" title="Profile" id="nav-dropdown">
+                 <LinkContainer to="/profile">
+                      <NavItem>Profile</NavItem>
+                    </LinkContainer>
+                    <LinkContainer to="/preferences">
+                      <NavItem>Preferences</NavItem>
+                    </LinkContainer>
+          <MenuItem divider />
+          <NavItem onClick={this.handleLogout}>Logout</NavItem>
+        </NavDropdown>
                     </Fragment>
 
                 : <Fragment>

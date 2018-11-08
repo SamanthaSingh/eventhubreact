@@ -17,6 +17,10 @@ import Contact from "./containers/Contact";
 import CreateEvent from "./containers/CreateEvent";
 import MyEvents from "./containers/MyEvents";
 import PersonalityTest from "./containers/PersonalityTest";
+import ProfilePage from "./containers/ProfilePage";
+import DiscoverNow from "./containers/DiscoverNow";
+import Preferences from "./containers/Preferences";
+
 
 
 
@@ -39,6 +43,11 @@ export default ({ childProps }) =>
     <AuthenticatedRoute path="/createevent" exact component={CreateEvent} props={childProps} />
     <AuthenticatedRoute path="/myevents" exact component={MyEvents} props={childProps} />
     <AuthenticatedRoute path="/personalitySurvey" exact component={PersonalityTest} props={childProps} />
+    <AuthenticatedRoute path="/profile" exact component={ProfilePage} props={childProps} />
+    <AuthenticatedRoute path="/discover" exact component={DiscoverNow} props={childProps} />
+    <AuthenticatedRoute path="/preferences" exact component={Preferences} props={childProps} />
+
+
 
 
 

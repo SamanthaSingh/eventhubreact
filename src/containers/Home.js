@@ -82,6 +82,8 @@ export default class Home extends Component {
 
     return (
       <React.Fragment>
+                <Link to={`/discover`}>Discover Now</Link>
+
         <Search />
         <h2> Suggested Events: </h2>
 
